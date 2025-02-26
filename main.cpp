@@ -5,6 +5,7 @@
 #include <ctime>
 #include <vector>
 #include <utility>
+#include <fstream>
 
 using namespace std;
 
@@ -155,13 +156,25 @@ class TaskManager{
 int main()
 {
     // Write C++ code here
-    vector<Task> tasksInput = {
-        Task("Task 1"),
-        Task("Task 2"),
-        Task("Task 3"),
-        Task("Task 4"),
-        Task("Task 5"),
-    };
+    ifstream file1("example.txt");
+    string line;
+    vector<Task> tasksInput = {};
+
+    if(file1.is_open()){
+        while(getline(file1, line)){
+            int delimiter_index = line.find('-');
+            cout << line.size() - delimiter_index - 2 << endl;
+            string task = line.substr(0, delimiter_index);
+            string status = line.substr(delimiter_index + 1, line.size() - delimiter_index - 2);
+
+            cout << "task: " << task << ", status: " << status << " Hello"<< endl;
+            tasksInput.push_back(Task(task, status));
+
+        }
+        file1.close();
+    }
+    
+    
     TaskManager taskManager(tasksInput);
     
     // vector<Task> tasksList = taskManager.getAllTasks();
@@ -170,7 +183,7 @@ int main()
     }
     taskManager.updateTask(3, "This is udpdated and done", "done");
     taskManager.deleteTask(7);
-    taskManager.addTask("This is task is in progress", "in-progress");
+    taskManager.addTask("This is task is in progress", "inprogress");
     // tasksList = taskManager.getAllTasks();
     for(auto task: taskManager.getAllTasks()){
         cout << task.getTaskId() <<", "<< task.getDescription() <<", "<< task.getStatus() << endl;
